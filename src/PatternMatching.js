@@ -18,7 +18,7 @@ function extractOptionsFromDecorators(decorators, decoratorName) {
     })
 }
 
-class ReduxPatternMatching {
+class PatternMatching {
     constructor(types, decoratorName = 'reflectActions') {
         this.types = types
         this._decoratorName = decoratorName
@@ -113,4 +113,4 @@ class ReduxPatternMatching {
 
 }
 
-export default ReduxPatternMatching
+export default PatternMatching

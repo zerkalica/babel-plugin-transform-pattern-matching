@@ -1,14 +1,14 @@
-import ReduxPatternMatching from './redux-pattern-matching'
+import PatternMatching from './PatternMatching'
 
-function ReduxPatternMatchingBabelPlugin({types}) {
+function PatternMatchingBabelPlugin({types}) {
     return {
         visitor: {
             ClassDeclaration(node, parent) {
-                const reduxPatternMatching = new ReduxPatternMatching(types)
-                reduxPatternMatching.run(node)
+                const patternMatching = new PatternMatching(types)
+                patternMatching.run(node)
             }
         }
     }
 }
 
-export default ReduxPatternMatchingBabelPlugin
+export default PatternMatchingBabelPlugin
