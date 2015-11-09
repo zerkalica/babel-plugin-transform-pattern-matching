@@ -1,0 +1,57 @@
+{
+  "name": "babel-plugin-transform-pattern-mathching",
+  "version": "0.0.1",
+  "description": "transform pattern mathing",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "cp -f conf/git-hooks/* .git/hooks || exit 0",
+    "prebuplish": "npm run build.prod",
+    "preversion": "git checkout master && git pull origin master && npm test",
+    "postversion": "git push origin master --tags && npm publish",
+    "precommit": "npm test",
+    "update": "ncu -ua && npm install",
+    "release-patch": "npm version patch",
+    "release-minor": "npm version minor",
+    "release-major": "npm version major",
+    "clean": "rm -rf __tests__ *.js *.map",
+    "build": "npm run clean && babel src --source-maps --out-dir .",
+    "build.prod": "NODE_ENV=production npm run build",
+    "build.dev": "NODE_ENV=development npm run build -- --watch",
+    "lint": "flow check && echo 'eslint src disabled: babel 6 plugin not ready'",
+    "test": "npm run lint && mocha",
+    "test.dev": "NODE_ENV=development npm test -- --growl --watch",
+    "test.cov": "babel-istanbul cover --report text --report html node_modules/mocha/bin/_mocha"
+  },
+  "files": [
+    "*.map",
+    "*.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zerkalica/babel-plugin-transform-pattern-mathching.git"
+  },
+  "keywords": [
+    "redux",
+    "babel",
+    "pattern",
+    "matching"
+  ],
+  "author": "Stefan Zerkalica <zerkalica@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zerkalica/babel-plugin-transform-pattern-mathching/issues"
+  },
+  "homepage": "https://github.com/zerkalica/babel-plugin-transform-pattern-mathching#readme",
+  "devDependencies": {
+    "babel-cli": "^6.1.2",
+    "babel-core": "^6.1.2",
+    "babel-plugin-syntax-flow": "^6.0.14",
+    "babel-plugin-transform-flow-strip-types": "^6.0.14",
+    "babel-preset-es2015": "^6.1.2",
+    "babel-preset-stage-0": "^6.1.2",
+    "glob": "^5.0.15",
+    "mocha": "^2.3.3"
+  }
+}

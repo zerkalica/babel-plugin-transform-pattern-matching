@@ -1,0 +1,14 @@
+[ignore]
+.*/dist/.*
+.*/conf/.*
+.*/test/.*
+.*/node_modules/.*
+
+[include]
+.*/src/.*
+
+[libs]
+
+
+[options]
+esproposal.decorators=ignore
