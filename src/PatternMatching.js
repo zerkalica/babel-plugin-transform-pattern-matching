@@ -44,40 +44,59 @@ class PatternMatching {
             const typesMap = target.body
                 .reduce((acc, node) => {
                     if (node !== decoratorInfo.node && node.kind === 'method') {
-                        return acc.concat(this._getTypes(node, decoratorInfo.options))
+                        acc.push(this._getTypes(node, decoratorInfo.options))
                     }
                     return acc
                 }, [])
 
             if (typesMap.length) {
-                const de = this._generateMap(typesMap)
-                // console.log(111,
-                //     decoratorInfo.node.body.body[0].argument.elements[0].elements,
-                //     222,
-                //     de.body[0].argument.elements[0].elements
-                // )
-                decoratorInfo.node.decorators = decoratorInfo.normalDecorators
+                decoratorInfo.node.decorators = decoratorInfo.normalDecorators.length
+                    ? decoratorInfo.normalDecorators
+                    : undefined
+
+                const de = this._generateMap(typesMap, decoratorInfo.options)
+                // console.log(111, decoratorInfo.node.body.body[0].cases)
                 decoratorInfo.node.body = de
             }
         }
     }
 
-    _generateMap(typesMap) {
+    _generateCase({types, method, argName, resultName}) {
         const t = this.types
-        return t.blockStatement([t.returnStatement(this._createMapExpression(typesMap))])
+
+        return types.map((type, index) => {
+            const ret = []
+            if (index === types.length - 1) {
+                ret.push(t.returnStatement(
+                    t.callExpression(
+                        t.memberExpression(t.thisExpression(), t.identifier(method)), [
+                            t.identifier(resultName),
+                            t.identifier(argName)
+                        ]
+                    )
+                ))
+            }
+            return t.switchCase(t.identifier(type), ret)
+        })
     }
 
-    _createMapExpression(typesMap) {
+    _generateMap(typesMap, {argName, resultName}) {
         const t = this.types
-        return t.arrayExpression(typesMap.map(({type, method}) =>
-            t.arrayExpression([
-                t.identifier(type),
-                t.memberExpression(
-                    t.thisExpression(),
-                    t.identifier(method)
-                )
-            ])
-        ))
+        return t.blockStatement([
+            t.switchStatement(
+                t.memberExpression(t.identifier(argName), t.identifier('constructor')),
+                typesMap.reduce((cases, {types, method}) => {
+                    return cases.concat(this._generateCase({
+                        argName,
+                        resultName,
+                        types,
+                        method
+                    }))
+                }, []).concat([
+                    t.switchCase(null, [t.returnStatement(t.identifier(resultName))])
+                ])
+            )
+        ])
     }
 
     _extractTypeNames(typeAnnotation) {
@@ -101,14 +120,13 @@ class PatternMatching {
             if (node.typeAnnotation.type === 'TypeAnnotation'
                 && node.name === argName
             ) {
-                const typeAnnotation = node.typeAnnotation.typeAnnotation
-                const records = this._extractTypeNames(typeAnnotation).map(annotationName => {
-                    return {type: annotationName, method: parentNode.key.name}
-                })
-                return acc.concat(records)
+                return {
+                    types: this._extractTypeNames(node.typeAnnotation.typeAnnotation),
+                    method: parentNode.key.name
+                }
             }
             return acc
-        }, [])
+        }, null)
     }
 
 }

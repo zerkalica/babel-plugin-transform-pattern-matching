@@ -11,4 +11,5 @@ function PatternMatchingBabelPlugin({types}) {
     }
 }
 
+export * from './decorators'
 export default PatternMatchingBabelPlugin
