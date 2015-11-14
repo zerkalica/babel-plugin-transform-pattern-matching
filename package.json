@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-pattern-matching",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "transform pattern mathing",
   "scripts": {
     "postinstall": "cp -f conf/git-hooks/* .git/hooks || exit 0",
