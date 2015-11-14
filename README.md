@@ -1,7 +1,9 @@
 babel-plugin-transform-pattern-matching
 =======================================
 
-Transpile code like this:
+Generate switch/case structure from class method type annotation. Usable with flowtype and redux.
+
+Transform code like this:
 
 ```js
 import {generateReducer} from 'babel-plugin-transform-pattern-matching/decorators'
