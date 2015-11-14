@@ -11,7 +11,7 @@ const exampleTranspiledFile = fs.readFileSync(
     path.join(__dirname, 'data', 'ExampleReducerTranspiled.js')
 ).toString()
 
-const pluginPath = path.join(__dirname, '..', 'index.js')
+const pluginPath = path.join(__dirname, '..', '..', 'index.js')
 
 const babelConfig = {
   plugins: [

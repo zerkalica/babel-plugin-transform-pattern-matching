@@ -2,7 +2,6 @@
   "name": "babel-plugin-transform-pattern-matching",
   "version": "0.0.3",
   "description": "transform pattern mathing",
-  "main": "index.js",
   "scripts": {
     "postinstall": "cp -f conf/git-hooks/* .git/hooks || exit 0",
     "prebuplish": "npm run build.prod",
@@ -13,8 +12,8 @@
     "release-patch": "npm version patch",
     "release-minor": "npm version minor",
     "release-major": "npm version major",
-    "clean": "rm -rf __tests__ *.js *.map",
-    "build": "npm run clean && babel src --source-maps --out-dir dist",
+    "clean": "rm -rf __tests__ plugin *.js *.map",
+    "build": "npm run clean && babel src --source-maps --out-dir .",
     "lint": "flow check && echo 'eslint src disabled: babel 6 plugin not ready'",
     "test": "npm run lint && mocha",
     "test.dev": "NODE_ENV=development npm test -- --growl --watch",
@@ -23,6 +22,7 @@
   "files": [
     "*.map",
     "*.js",
+    "plugin",
     "README.md",
     "LICENSE"
   ],

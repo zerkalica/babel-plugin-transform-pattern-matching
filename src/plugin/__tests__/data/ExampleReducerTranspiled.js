@@ -1,5 +1,5 @@
-import type { ReducerFn } from '../../decorators';
-import { generateReducer } from '../../decorators';
+import type { ReducerFn } from '../../../decorators';
+import { generateReducer } from '../../../decorators';
 
 type Todos = Object;
 class TodoAddMultipleAction {}

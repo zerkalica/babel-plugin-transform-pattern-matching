@@ -1,4 +1,4 @@
-import PatternMatchingBabelPlugin from './patternMatchingBabelPlugin'
+import PatternMatchingBabelPlugin from './plugin/patternMatchingBabelPlugin'
 
 export * from './decorators'
 

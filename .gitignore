@@ -32,3 +32,4 @@ dist
 /*.js
 /*.sh
 /__tests__
+/plugin
