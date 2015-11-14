@@ -4,7 +4,7 @@
   "description": "transform pattern mathing",
   "scripts": {
     "postinstall": "cp -f conf/git-hooks/* .git/hooks || exit 0",
-    "prebuplish": "npm run build.prod",
+    "prebuplish": "npm run build",
     "preversion": "git checkout master && git pull origin master && npm test",
     "postversion": "git push origin master --tags && npm publish",
     "precommit": "npm test",
