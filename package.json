@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-pattern-matching",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "transform pattern mathing",
   "main": "index.js",
   "scripts": {
