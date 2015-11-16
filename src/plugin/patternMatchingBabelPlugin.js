@@ -1,7 +1,6 @@
 import findReducerPropertyVisitor from './findReducerPropertyVisitor'
 import getTypesFromClassMethodsVisitor from './getTypesFromClassMethodsVisitor'
-import createConstructorBlock from './createConstructorBlock'
-import createNewConstructor from './createNewConstructor'
+import generateSwitchCase from './generateSwitchCase'
 
 export default function patternMatchingBabelPlugin({types: t}) {
     return {
@@ -9,44 +8,35 @@ export default function patternMatchingBabelPlugin({types: t}) {
             ClassDeclaration(path) {
                 const {node, scope} = path
                 const state = {
-                    reducerLabel: 'generateReducer',
-                    argNum: null,
+                    reducerLabel: 'babelPatternMatch',
                     prop: null,
-                    decoratorPath: null,
-                    constr: null
+                    expressionParentPath: null,
+                    expression: null
                 }
                 path.traverse(findReducerPropertyVisitor, state)
 
-                if (!state.prop) {
+                if (!state.prop || !state.expression) {
                     return
                 }
 
+                const [switchArg, thisRef] = state.expression.arguments
+                const args = state.prop.params
+                const argNum = args.findIndex(({name}) => name === switchArg.name)
+
                 const typesState = {
                     types: [],
-                    argNum: state.argNum
+                    skipProp: state.prop,
+                    argNum
                 }
                 path.traverse(getTypesFromClassMethodsVisitor, typesState)
-
-                if (typesState.types.length) {
-                    const constructorBlock = createConstructorBlock({
-                        t,
-                        typesMap: typesState.types,
-                        reducerRef: state.prop.key,
-                        newReducerFnId: scope.generateUidIdentifier(node.id.name),
-                        thisRef: scope.generateUidIdentifier('this')
-                    })
-
-                    if (state.constr) {
-                        const ConstrBody = state.constr.body
-                        ConstrBody.body = ConstrBody.body.concat(constructorBlock)
-                    } else {
-                        const {body} = node
-                        body.body = [
-                            createNewConstructor({t, constructorBlock})
-                        ].concat(body.body)
-                    }
-                }
-                state.decoratorPath.remove()
+                const switchCase = generateSwitchCase({
+                    args,
+                    switchArg,
+                    t,
+                    thisRef: thisRef || t.thisExpression(),
+                    typesMap: typesState.types
+                })
+                state.expressionParentPath.replaceWith(switchCase)
             }
         }
     }

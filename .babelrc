@@ -2,6 +2,7 @@
   "presets": ["es2015", "stage-0"],
   "plugins": [
       "syntax-flow",
+      "espower",
       "transform-flow-strip-types"
   ]
 }

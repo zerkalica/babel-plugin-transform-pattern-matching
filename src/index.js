@@ -1,5 +1,5 @@
 import PatternMatchingBabelPlugin from './plugin/patternMatchingBabelPlugin'
 
-export * from './decorators'
+export * from './expr'
 
 export default PatternMatchingBabelPlugin

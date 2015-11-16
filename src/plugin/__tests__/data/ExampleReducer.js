@@ -1,27 +1,35 @@
-import type {ReducerFn} from '../../../decorators'
-import {generateReducer} from '../../../decorators'
+import {babelPatternMatch} from '../../../expr'
 
-type Todos = Object
-class TodoAddMultipleAction {}
-class TodoAddMultipleErrorAction {}
-class TodoAddErrorAction {}
-class TodoCompleteErrorAction {}
-class TodoDestroyErrorAction {}
+class Action {}
+class TodoAddMultipleAction extends Action {}
+class TodoAddMultipleErrorAction extends Action {}
+class TodoAddErrorAction extends Action {}
+class TodoCompleteErrorAction extends Action {}
+class TodoDestroyErrorAction extends Action {}
+
+class A {}
+class B {}
+
+type AnyAction = Object & Action
 
 class ExampleReducer {
-    @generateReducer(1)
-    reducer: ReducerFn<Todos>;
-
-    addMultiple(todos: Todos, action: TodoAddMultipleAction): Todos {
-        return todos
+    reduce(a: A, action: AnyAction, b: B): A {
+        babelPatternMatch(action)
+        return a
     }
 
-    addError(todos: Todos,
+    addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+        return a
+    }
+
+    addError(
+        a: A,
         {error}: TodoAddMultipleErrorAction
             | TodoAddErrorAction
             | TodoCompleteErrorAction
-            | TodoDestroyErrorAction
-    ): Todos {
-        return todos
+            | TodoDestroyErrorAction,
+        b: B
+    ): A {
+        return a
     }
 }

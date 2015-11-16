@@ -6,71 +6,85 @@ Generate switch/case structure from class method type annotation. Usable with fl
 Transform code like this:
 
 ```js
-import {generateReducer} from 'babel-plugin-transform-pattern-matching/decorators'
-import type {ReducerFn} from 'babel-plugin-transform-pattern-matching/decorators'
+import {babelPatternMatch} from 'babel-plugin-transform-pattern-matching/expr'
 
-class Todos {
-    items: Array<{id: string, title: string}>;
-    error: string;
-}
+class Action {}
+class TodoAddMultipleAction extends Action {}
+class TodoAddMultipleErrorAction extends Action {}
+class TodoAddErrorAction extends Action {}
+class TodoCompleteErrorAction extends Action {}
+class TodoDestroyErrorAction extends Action {}
 
-class TodoReducer {
-    @generateReducer(1)
-    reducer: ReducerFn<Todos>;
+class A {}
+class B {}
 
-    add(todos: Todos, {id, title}: TodoAddAction): Todos {
-        todos.items.push({id, title})
-        return todos
+type AnyAction = Object & Action
+
+class ExampleReducer {
+    reduce(a: A, action: AnyAction, b: B): A {
+        babelPatternMatch(action)
+        return a
     }
 
-    error(todos: Todos, {error}: TodoAddErrorAction | TodoRemoveErrorAction): Todos {
-        todos.error = error
-        return todos
+    addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+        return a
+    }
+
+    addError(
+        a: A,
+        {error}: TodoAddMultipleErrorAction
+            | TodoAddErrorAction
+            | TodoCompleteErrorAction
+            | TodoDestroyErrorAction,
+        b: B
+    ): A {
+        return a
     }
 }
-
-export default new TodoReducer().reducer
 ```
 
 to this:
 
 ```js
-import {generateReducer} from 'babel-plugin-transform-pattern-matching/decorators'
-import type {ReducerFn} from 'babel-plugin-transform-pattern-matching/decorators'
+import { babelPatternMatch } from 'babel-plugin-transform-pattern-matching/expr';
 
-class Todos {
-    items: Array<{id: string, title: string}>;
-    error: string;
-}
+class Action {}
+class TodoAddMultipleAction extends Action {}
+class TodoAddMultipleErrorAction extends Action {}
+class TodoAddErrorAction extends Action {}
+class TodoCompleteErrorAction extends Action {}
+class TodoDestroyErrorAction extends Action {}
 
-class TodoReducer {
-    reducer: ReducerFn<Todos>;
+class A {}
+class B {}
 
-    constructor() {
-        const _this = this
-        this.reducer = function _TodoReducer(state, action) {
-            switch (action.constructor) {
-                case TodoAddAction:
-                    return _this.add(state, action)
-                case TodoAddErrorAction:
-                case TodoRemoveErrorAction:
-                    return _this.error(state, action)
-                default:
-                    return state
-            }
+type AnyAction = Object & Action;
+
+class ExampleReducer {
+    reduce(a: A, action: AnyAction, b: B): A {
+        switch (action.constructor) {
+            case TodoAddMultipleAction:
+                return this.addMultiple(a, action, b);
+
+            case TodoAddMultipleErrorAction:
+            case TodoAddErrorAction:
+            case TodoCompleteErrorAction:
+            case TodoDestroyErrorAction:
+                return this.addError(a, action, b);
+
+            default:
+                break;
         }
+
+        return a;
     }
 
-    add(todos: Todos, {id, title}: TodoAddAction): Todos {
-        todos.items.push({id, title})
-        return todos
+    addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+        return a;
     }
 
-    error(todos: Todos, {error}: TodoAddErrorAction | TodoRemoveErrorAction): Todos {
-        todos.error = error
-        return todos
+    addError(a: A, { error }: TodoAddMultipleErrorAction | TodoAddErrorAction | TodoCompleteErrorAction | TodoDestroyErrorAction, b: B): A {
+        return a;
     }
 }
-
-export default new TodoReducer().reducer
 ```

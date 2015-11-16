@@ -1,41 +1,41 @@
-import type { ReducerFn } from '../../../decorators';
-import { generateReducer } from '../../../decorators';
+import { babelPatternMatch } from '../../../expr';
 
-type Todos = Object;
-class TodoAddMultipleAction {}
-class TodoAddMultipleErrorAction {}
-class TodoAddErrorAction {}
-class TodoCompleteErrorAction {}
-class TodoDestroyErrorAction {}
+class Action {}
+class TodoAddMultipleAction extends Action {}
+class TodoAddMultipleErrorAction extends Action {}
+class TodoAddErrorAction extends Action {}
+class TodoCompleteErrorAction extends Action {}
+class TodoDestroyErrorAction extends Action {}
+
+class A {}
+class B {}
+
+type AnyAction = Object & Action;
 
 class ExampleReducer {
-    constructor() {
-        const _this = this;
+    reduce(a: A, action: AnyAction, b: B): A {
+        switch (action.constructor) {
+            case TodoAddMultipleAction:
+                return this.addMultiple(a, action, b);
 
-        this.reducer = function _ExampleReducer(state, action) {
-            switch (action.constructor) {
-                case TodoAddMultipleAction:
-                    return _this.addMultiple(state, action);
+            case TodoAddMultipleErrorAction:
+            case TodoAddErrorAction:
+            case TodoCompleteErrorAction:
+            case TodoDestroyErrorAction:
+                return this.addError(a, action, b);
 
-                case TodoAddMultipleErrorAction:
-                case TodoAddErrorAction:
-                case TodoCompleteErrorAction:
-                case TodoDestroyErrorAction:
-                    return _this.addError(state, action);
+            default:
+                break;
+        }
 
-                default:
-                    return state;
-            }
-        };
+        return a;
     }
 
-    reducer: ReducerFn<Todos>;
-
-    addMultiple(todos: Todos, action: TodoAddMultipleAction): Todos {
-        return todos;
+    addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+        return a;
     }
 
-    addError(todos: Todos, { error }: TodoAddMultipleErrorAction | TodoAddErrorAction | TodoCompleteErrorAction | TodoDestroyErrorAction): Todos {
-        return todos;
+    addError(a: A, { error }: TodoAddMultipleErrorAction | TodoAddErrorAction | TodoCompleteErrorAction | TodoDestroyErrorAction, b: B): A {
+        return a;
     }
 }

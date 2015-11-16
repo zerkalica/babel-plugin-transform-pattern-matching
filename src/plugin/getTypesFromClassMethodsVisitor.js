@@ -18,6 +18,9 @@ function extractTypeNames(typeAnnotation) {
 const getTypesFromClassMethodsVisitor = {
     'ObjectMethod|ClassMethod'(path, state) {
         const node = path.node
+        if (node === state.skipProp) {
+            return
+        }
         const params = node.params
         const key = node.key
         const param = params[state.argNum]
