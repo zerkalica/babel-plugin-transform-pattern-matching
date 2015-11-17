@@ -5,8 +5,8 @@ import generateSwitchCase from './generateSwitchCase'
 export default function patternMatchingBabelPlugin({types: t}) {
     return {
         visitor: {
-            ClassDeclaration(path) {
-                const {node, scope} = path
+            'ClassDeclaration|ObjectExpression'(path) {
+                const {node} = path
                 const state = {
                     reducerLabel: 'babelPatternMatch',
                     prop: null,
@@ -14,7 +14,6 @@ export default function patternMatchingBabelPlugin({types: t}) {
                     expression: null
                 }
                 path.traverse(findReducerPropertyVisitor, state)
-
                 if (!state.prop || !state.expression) {
                     return
                 }
@@ -29,11 +28,21 @@ export default function patternMatchingBabelPlugin({types: t}) {
                     argNum
                 }
                 path.traverse(getTypesFromClassMethodsVisitor, typesState)
+
+                let detectedThis
+                if (path.isObjectExpression()) {
+                    detectedThis = path.parent.id
+                } else {
+                    detectedThis = state.prop.static
+                        ? node.id
+                        : t.thisExpression()
+                }
+
                 const switchCase = generateSwitchCase({
                     args,
                     switchArg,
                     t,
-                    thisRef: thisRef || t.thisExpression(),
+                    thisRef: thisRef || detectedThis,
                     typesMap: typesState.types
                 })
                 state.expressionParentPath.replaceWith(switchCase)

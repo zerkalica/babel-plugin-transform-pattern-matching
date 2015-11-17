@@ -12,17 +12,57 @@ class B {}
 
 type AnyAction = Object & Action;
 
-class ExampleReducer {
+const Reducer1 = {
     reduce(a: A, action: AnyAction, b: B): A {
         switch (action.constructor) {
             case TodoAddMultipleAction:
-                return this.addMultiple(a, action, b);
+                return Reducer1.addMultiple(a, action, b);
 
             case TodoAddMultipleErrorAction:
             case TodoAddErrorAction:
             case TodoCompleteErrorAction:
             case TodoDestroyErrorAction:
-                return this.addError(a, action, b);
+                return Reducer1.addError(a, action, b);
+
+            default:
+                break;
+        }
+
+        return a;
+    },
+
+    addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+        return a;
+    },
+
+    addError(a: A, { error }: TodoAddMultipleErrorAction | TodoAddErrorAction | TodoCompleteErrorAction | TodoDestroyErrorAction, b: B): A {
+        return a;
+    }
+};
+
+class Reducer2 {
+    static reduce(a: A, action: AnyAction, b: B): A {
+        switch (action.constructor) {
+            case TodoAddMultipleAction:
+                return Reducer2.addMultiple(a, action, b);
+
+            default:
+                break;
+        }
+
+        return a;
+    }
+
+    static addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+        return a;
+    }
+}
+
+class Reducer3 {
+    reduce(a: A, action: AnyAction, b: B): A {
+        switch (action.constructor) {
+            case TodoAddMultipleAction:
+                return this.addMultiple(a, action, b);
 
             default:
                 break;
@@ -34,8 +74,11 @@ class ExampleReducer {
     addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
         return a;
     }
-
-    addError(a: A, { error }: TodoAddMultipleErrorAction | TodoAddErrorAction | TodoCompleteErrorAction | TodoDestroyErrorAction, b: B): A {
-        return a;
-    }
 }
+
+const reducer3 = new Reducer3();
+export default {
+    reducer1: Reducer1.reduce,
+    reducer2: Reducer2.reduce,
+    reducer3: reducer3.reduce.bind(reducer3)
+};

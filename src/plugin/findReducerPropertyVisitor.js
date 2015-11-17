@@ -9,11 +9,14 @@ const findReducerExpressionVisitor = {
 }
 
 const findReducerPropertyVisitor = {
-    'ClassMethod'(path, state) {
+    'ClassMethod|ObjectMethod'(path, state) {
         const propState = {
             reducerLabel: state.reducerLabel,
             expressionParentPath: null,
             expression: null
+        }
+        if (!path.node) {
+            return
         }
         path.traverse(findReducerExpressionVisitor, propState)
         if (propState.expression) {
