@@ -10,9 +10,6 @@ export const findReducerExpressionVisitor = {
 
 const findReducerPropertyVisitor = {
     'ClassMethod|ObjectMethod|FunctionDeclaration'(path, state) {
-        if (state.parent && path.parent !== state.parent) {
-            return
-        }
         const propState = {
             reducerLabel: state.reducerLabel,
             expressionParentPath: null,

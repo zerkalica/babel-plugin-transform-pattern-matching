@@ -8,7 +8,6 @@ export default function patternMatchingBabelPlugin({types: t}) {
             'ClassDeclaration|ObjectExpression|Program'(path) {
                 const state = {
                     reducerLabel: 'babelPatternMatch',
-                    parent: path.isProgram() ? path.node : null,
                     prop: null,
                     expressionParentPath: null,
                     expression: null
@@ -26,8 +25,11 @@ export default function patternMatchingBabelPlugin({types: t}) {
                     skipProp: prop.node,
                     argNum
                 }
-                path.traverse(getTypesFromClassMethodsVisitor, typesState)
-
+                if (path.isProgram()) {
+                    state.prop.traverse(getTypesFromClassMethodsVisitor, typesState)
+                } else {
+                    path.traverse(getTypesFromClassMethodsVisitor, typesState)
+                }
                 let thisRef
                 if (path.isProgram()) {
                     thisRef = path.scope.generateUidIdentifier(prop.node.id.name)
