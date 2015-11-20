@@ -26,7 +26,7 @@ export default function patternMatchingBabelPlugin({types: t}) {
                     argNum
                 }
                 if (path.isProgram()) {
-                    state.prop.traverse(getTypesFromClassMethodsVisitor, typesState)
+                    prop.traverse(getTypesFromClassMethodsVisitor, typesState)
                 } else {
                     path.traverse(getTypesFromClassMethodsVisitor, typesState)
                 }
