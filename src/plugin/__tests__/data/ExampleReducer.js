@@ -55,7 +55,7 @@ class Reducer3 {
         return a
     }
 }
-
+/*
 function reducer4(a: A, action: AnyAction, b: B): A {
     babelPatternMatch(action, {
         addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
@@ -64,11 +64,11 @@ function reducer4(a: A, action: AnyAction, b: B): A {
     })
     return a
 }
-
+*/
 const reducer3 = new Reducer3()
 export default {
     reducer1: Reducer1.reduce,
     reducer2: Reducer2.reduce,
-    reducer3: reducer3.reduce.bind(reducer3),
-    reducer4: reducer4
+    reducer3: reducer3.reduce.bind(reducer3)
+//    reducer4: reducer4
 }

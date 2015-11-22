@@ -5,7 +5,7 @@ import generateSwitchCase from './generateSwitchCase'
 export default function patternMatchingBabelPlugin({types: t}) {
     return {
         visitor: {
-            'ClassDeclaration|ObjectExpression|Program'(path) {
+            'ClassDeclaration|ObjectExpression'(path) {
                 const state = {
                     reducerLabel: 'babelPatternMatch',
                     prop: null,
@@ -31,7 +31,7 @@ export default function patternMatchingBabelPlugin({types: t}) {
                     path.traverse(getTypesFromClassMethodsVisitor, typesState)
                 }
                 let thisRef
-                if (path.isProgram()) {
+                if (path.isProgram() && prop.node.type === 'FunctionDeclaration') {
                     thisRef = path.scope.generateUidIdentifier(prop.node.id.name)
                     prop.insertBefore(
                         t.variableDeclaration('const', [t.variableDeclarator(thisRef, container)])

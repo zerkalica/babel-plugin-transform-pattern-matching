@@ -1,7 +1,7 @@
 export const findReducerExpressionVisitor = {
     ExpressionStatement(path, state) {
         const expr = path.node.expression
-        if (expr.callee.name === state.reducerLabel) {
+        if (expr.type === 'CallExpression' && expr.callee.name === state.reducerLabel) {
             state.expressionParentPath = path
             state.expression = expr
         }

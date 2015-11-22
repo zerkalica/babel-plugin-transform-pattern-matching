@@ -75,28 +75,20 @@ class Reducer3 {
         return a;
     }
 }
-
-const _reducer = {
-    addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
-        return a;
-    }
-};
+/*
 function reducer4(a: A, action: AnyAction, b: B): A {
-    switch (action.constructor) {
-        case TodoAddMultipleAction:
-            return _reducer.addMultiple(a, action, b);
-
-        default:
-            break;
-    }
-
-    return a;
+    babelPatternMatch(action, {
+        addMultiple(a: A, action: TodoAddMultipleAction, b: B): A {
+            return a
+        }
+    })
+    return a
 }
-
+*/
 const reducer3 = new Reducer3();
 export default {
     reducer1: Reducer1.reduce,
     reducer2: Reducer2.reduce,
-    reducer3: reducer3.reduce.bind(reducer3),
-    reducer4: reducer4
+    reducer3: reducer3.reduce.bind(reducer3)
+    //    reducer4: reducer4
 };

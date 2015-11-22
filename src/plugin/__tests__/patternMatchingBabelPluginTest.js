@@ -23,7 +23,7 @@ const babelConfig = {
 describe('patternMatchingBabelPluginTest', () => {
     it('test successful for ExampleReducer', () => {
         const {code} = transform(exampleFile, babelConfig)
-        // fs.writeFileSync(exampleTranspiledFileName, code)
+        fs.writeFileSync(exampleTranspiledFileName, code)
         const exampleTranspiledFile = fs.readFileSync(exampleTranspiledFileName).toString()
         assert(code === exampleTranspiledFile)
     })
